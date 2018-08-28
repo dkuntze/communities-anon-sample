@@ -1,4 +1,4 @@
-# APx Huge Merck
+# APx Anonymous Comments Sample
 
 This a content package project generated using the AEM Multimodule Lazybones template.
 
