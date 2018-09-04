@@ -4,7 +4,7 @@ This a content package project generated using the AEM Multimodule Lazybones tem
 
 Tested on AEM 6.3
 
-##Pre-Work
+## Pre-Work
 
 Install this on an OOTB AEM 6.3 publish instance (to accurately test anonymous commenting)
 
