@@ -7,8 +7,7 @@ import com.adobe.cq.social.commons.comments.api.Comment;
 import com.adobe.cq.social.commons.comments.endpoints.AbstractCommentOperation;
 import com.adobe.cq.social.commons.comments.endpoints.AbstractCommentOperationService;
 import com.adobe.cq.social.commons.comments.endpoints.CommentOperations;
-import com.adobe.cq.social.scf.OperationException;
-import com.adobe.cq.social.scf.SocialOperationResult;
+import com.adobe.cq.social.scf.*;
 import com.adobe.granite.security.user.UserProperties;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.LoginException;
@@ -57,11 +56,13 @@ public class HugeCommentOperation extends AbstractCommentOperation<CommentOperat
     @Reference
     private ResourceResolverFactory resolverFactory;
 
+    @Reference
+    private SocialComponentFactoryManager componentFactoryManager;
+
     public static final String CREATE_COMMENT_OPERATION = "social:createComment";
 
     protected SocialOperationResult performOperation(final SlingHttpServletRequest request, final Session session)
             throws OperationException {
-        LOG.info("YOU ROCK");
 
         try {
             //use a service user here - using a admin rr is a bad idea
@@ -69,12 +70,13 @@ public class HugeCommentOperation extends AbstractCommentOperation<CommentOperat
             LOG.info("User from request: " + getUserIdFromRequest(request, "ANONYMOUS"));
             final Resource comment = getCommentOperationService().create(request, adminRR.adaptTo(Session.class));
             adminRR.close();
+            //comment is good here
             return new SocialOperationResult(getSocialComponentForComment(comment, request), "created",
                     HttpServletResponse.SC_CREATED, comment.getPath());
         } catch (LoginException e) {
             LOG.error(e.getMessage());
         }
-            return null;
+        return null;
     }
 
     protected CommentOperations getCommentOperationService() {
@@ -90,6 +92,14 @@ public class HugeCommentOperation extends AbstractCommentOperation<CommentOperat
             userIdentifier = defaultValue;
         }
         return userIdentifier;
+    }
+
+    protected SocialComponent getSocialComponentForComment(final Resource comment,
+                                                           final SlingHttpServletRequest request) {
+        // resolving the resource again using the request session
+        final Resource resource = request.getResourceResolver().getResource(comment.getPath());
+        final SocialComponentFactory factory = componentFactoryManager.getSocialComponentFactory(resource);
+        return (factory != null) ? factory.getSocialComponent(resource, request) : null;
     }
 
 }

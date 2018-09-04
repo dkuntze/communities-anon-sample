@@ -10,6 +10,7 @@ import com.adobe.cq.social.commons.events.CommentEvent;
 import com.adobe.cq.social.scf.SocialComponent;
 import com.adobe.cq.social.scf.SocialComponentFactory;
 import com.adobe.cq.social.scf.SocialComponentFactoryManager;
+import com.adobe.cq.social.scf.core.SocialEvent;
 import com.adobe.cq.social.ugcbase.SocialUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.LoginException;
@@ -22,8 +23,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.Session;
-import java.util.HashMap;
-import java.util.Map;
 
 @Component(
         service = CommentOperations.class,
@@ -61,8 +60,15 @@ public class HugeCommentOperationService extends AbstractCommentOperationService
     }
 
     protected void postCreateEvent(final com.adobe.cq.social.commons.comments.api.Comment comment, final String userId) {
-        postEvent(new CommentEvent(comment, userId, comment.isTopLevel() ? CommentEvent.CommentActions.CREATED
-                : CommentEvent.CommentActions.REPLIED));
+
+        //LOG.info("something is null here: " + comment.getMessage());
+        try {
+            postEvent(new CommentEvent(comment, userId, comment.isTopLevel() ? CommentEvent.CommentActions.CREATED
+                    : CommentEvent.CommentActions.REPLIED));
+        } catch (NullPointerException npe) {
+            LOG.error(npe.getMessage());
+        }
+
     }
 
     protected boolean mayPost(final SlingHttpServletRequest request, final CommentSystem cs, final String userId) {
