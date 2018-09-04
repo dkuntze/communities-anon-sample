@@ -2,7 +2,18 @@
 
 This a content package project generated using the AEM Multimodule Lazybones template.
 
-## Building
+Tested on AEM 6.3
+
+##Pre-Work
+
+Install this on an OOTB AEM 6.3 publish instance (to accurately test anonymous commenting)
+
+    mvn clean install -PautoInstallPackagePublish
+    
+Whitelist this bundle in the OSGi config (Apache Sling Login Admin Whitelist):
+    ``com.adobe.apx.huge-merck`` or tick the checkbox allowing all in the config.
+
+## Building (author)
 
 This project uses Maven for building. Common commands:
 
