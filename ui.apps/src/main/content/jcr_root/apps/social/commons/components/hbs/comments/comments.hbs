@@ -50,6 +50,7 @@
                         <textarea class="scf-composer-msg" data-attrib="message" data-field-type="rte" name="message" placeholder="{{i18n "Write a HUGE comment"}}"></textarea>
                     </div>
                 {{else}}
+                    Email address <input class="scf-composer-msg" type="email" name="email" data-attrib="email" placeholder="email address" value="{{email}}" data-scf-validator='{"validation":"noempty"}'/><br/>
                     <textarea class="scf-composer-msg" data-attrib="message" name="message" placeholder="{{i18n "Write a HUGE comment"}}" evt="click=expandComposer" data-scf-validator='{"validation":"noempty"}'></textarea>
                 {{/if}}
                 <div class='scf-composer-toolbar'>
