@@ -43,6 +43,7 @@ public class HugeSocialComponentFactory extends CommentSystemSocialComponentFact
     public SocialComponent getSocialComponent(Resource resource, SlingHttpServletRequest slingHttpServletRequest) {
         log.info("GSC2");
         try {
+            log.info(resource.getPath());
             return new HugeComment(resource, getClientUtilities(slingHttpServletRequest), commentSocialComponentListProviderManager);
         } catch (Exception e) {
             log.error(e.getMessage());

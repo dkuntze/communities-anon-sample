@@ -11,6 +11,7 @@ import com.adobe.cq.social.scf.SocialComponent;
 import com.adobe.cq.social.scf.SocialComponentFactory;
 import com.adobe.cq.social.scf.SocialComponentFactoryManager;
 import com.adobe.cq.social.scf.core.SocialEvent;
+import com.adobe.cq.social.ugcbase.CollabUser;
 import com.adobe.cq.social.ugcbase.SocialUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.LoginException;
@@ -29,7 +30,9 @@ import javax.jcr.Session;
         name = "Custom Comment OPS Service",
         property = {
                 "type=huge",
-                "attachmentTypeBlacklist=DEFAULT"
+                "attachmentTypeBlacklist=DEFAULT",
+                AbstractCommentOperationService.PROPERTY_FIELD_WHITELIST + "=fname",
+                AbstractCommentOperationService.PROPERTY_FIELD_WHITELIST + "=tags",
         }
 )
 public class HugeCommentOperationService extends AbstractCommentOperationService<CommentOperationExtension, CommentOperationExtension.CommentOperation, Comment>

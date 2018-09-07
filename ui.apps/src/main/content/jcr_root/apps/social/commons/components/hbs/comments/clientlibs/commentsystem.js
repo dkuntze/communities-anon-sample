@@ -595,10 +595,12 @@
                 var msg = this.getField("message");
                 var tags = this.getField("tags");
                 var email = this.getField("email");
+                var fname = this.getField("fname");
                 var data = _.extend(this.getOtherProperties(), {
                     "message": msg,
                     "tags": tags,
-                    "email": email
+                    "email": email,
+                    "fname": fname
                 });
                 if (!SCF.Session.get("loggedIn")) {
                     data.userIdentifier = this.getField("anon-name");
@@ -889,6 +891,7 @@
                     postData.append(':operation', this.UPDATE_OPERATION);
                     postData.append("message", this.get("message"));
                     postData.append("email", this.get("email")); //fix
+                    postData.append("fname", this.get("fname")); //fix 2
                     $CQ.each(this.getCustomProperties(), function(key, value) {
                         postData.append(key, value);
                     });
@@ -1667,10 +1670,12 @@
             var textareaVal = this.getField("editMessage");
             var tags = this.getField("editTags");
             var email = this.getField("email");
+            var fname = this.getField("fname");
             var data = _.extend(this.getOtherProperties(), {
                 message: textareaVal,
                 "tags": tags,
-                "email": email
+                "email": email,
+                "fname": fname
             });
 
             if (typeof this.files != 'undefined') {

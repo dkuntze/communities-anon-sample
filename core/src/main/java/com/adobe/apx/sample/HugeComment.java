@@ -28,4 +28,15 @@ public class HugeComment extends AbstractComment<CommentCollectionConfiguration>
         ValueMap map = resource.adaptTo(ValueMap.class);
         return clientUtils.filterHTML(map.get("email").toString());
     }
+
+    public String getFname() {
+        LOG.info("getting fname");
+        String fname = "";
+        try {
+            ValueMap map = resource.adaptTo(ValueMap.class);
+            fname = clientUtils.filterHTML(map.get("fname").toString());
+        }catch (Exception ignored) {}
+
+        return fname;
+    }
 }
