@@ -1,5 +1,7 @@
 package com.adobe.apx.sample.operation.impl;
 
+import com.adobe.cq.social.commons.CollabUtil;
+import com.adobe.cq.social.commons.CommentException;
 import com.adobe.cq.social.commons.annotation.Endpoint;
 import com.adobe.cq.social.commons.annotation.Parameter;
 import com.adobe.cq.social.commons.annotation.Parameters;
@@ -64,15 +66,25 @@ public class HugeCommentOperation extends AbstractCommentOperation<CommentOperat
     protected SocialOperationResult performOperation(final SlingHttpServletRequest request, final Session session)
             throws OperationException {
 
+        LOG.debug("performing operations...");
         try {
             //use a service user here - using a admin rr is a bad idea
             ResourceResolver adminRR = resolverFactory.getAdministrativeResourceResolver(null);
-            LOG.info("User from request: " + getUserIdFromRequest(request, "ANONYMOUS"));
             final Resource comment = getCommentOperationService().create(request, adminRR.adaptTo(Session.class));
-            adminRR.close();
+            LOG.debug("comment name: " + comment.getName());
+
             //comment is good here
-            return new SocialOperationResult(getSocialComponentForComment(comment, request), "created",
+
+            LOG.debug("PerformOperation (request, session): " + request.getPathInfo()); //request is good
+
+            LOG.debug(getSocialComponentForComment(comment, request).getResource().getPath()); //this kicks a null out
+
+            SocialOperationResult operationResult = new SocialOperationResult(getSocialComponentForComment(comment, request), "created",
                     HttpServletResponse.SC_CREATED, comment.getPath());
+
+            LOG.info("GET URL: " + operationResult.getResource().getUrl());
+            adminRR.close();
+            return operationResult;
         } catch (LoginException e) {
             LOG.error(e.getMessage());
         }
@@ -98,8 +110,34 @@ public class HugeCommentOperation extends AbstractCommentOperation<CommentOperat
                                                            final SlingHttpServletRequest request) {
         // resolving the resource again using the request session
         final Resource resource = request.getResourceResolver().getResource(comment.getPath());
+        LOG.debug("getSocialComponentForComment resource, request");
         final SocialComponentFactory factory = componentFactoryManager.getSocialComponentFactory(resource);
+
+        LOG.debug("factory name: " + factory.getClass().getSimpleName());
         return (factory != null) ? factory.getSocialComponent(resource, request) : null;
+    }
+
+    protected SocialOperationResult performOperation(final SlingHttpServletRequest request) throws OperationException {
+        Session session;
+        Session serviceSession = null;
+        LOG.debug("performOperation (request): " + request.getRequestURI());
+        if (CollabUtil.hasModeratePermissions(request.getResource())) {
+            session = getSessionFromResource(request.getResource());
+        } else {
+            serviceSession = createAdminSession();
+            session = serviceSession;
+        }
+
+        if (null == session) {
+            throw new CommentException("session unavailable");
+        }
+        SocialOperationResult result;
+        try {
+            result = performOperation(request, session);
+            return result;
+        } finally {
+            closeAdminSession(serviceSession);
+        }
     }
 
 }
