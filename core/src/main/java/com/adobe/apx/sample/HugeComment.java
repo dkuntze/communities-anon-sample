@@ -21,8 +21,16 @@ public class HugeComment extends AbstractComment<CommentCollectionConfiguration>
 
     public HugeComment(final Resource resource, final ClientUtilities clientUtils,
                                  final CommentSocialComponentListProviderManager listProviderManager) throws RepositoryException {
-        super(resource, clientUtils, QueryRequestInfo.DEFAULT_QUERY_INFO_FACTORY.create(), listProviderManager);
+        super(resource, clientUtils, listProviderManager);
+        LOG.debug(listProviderManager.toString());
     }
+
+    public HugeComment(final Resource resource, final ClientUtilities clientUtils, final QueryRequestInfo queryInfo,
+                       final CommentSocialComponentListProviderManager listProviderManager) throws RepositoryException {
+        super(resource, clientUtils, queryInfo, listProviderManager);
+        LOG.debug(listProviderManager.toString());
+    }
+
 
     public String getEmail() {
         ValueMap map = resource.adaptTo(ValueMap.class);
