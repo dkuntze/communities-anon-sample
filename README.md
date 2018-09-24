@@ -2,7 +2,7 @@
 
 This a content package project generated using the AEM Multimodule Lazybones template.
 
-Tested on AEM 6.3
+Tested on AEM 6.3.2
 
 ## Pre-Work
 
